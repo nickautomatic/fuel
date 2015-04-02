@@ -49,7 +49,31 @@ class Model_Item extends Model
 			'events' => array('before_save'),
 			'mysql_timestamp' => false,
 		),
+		'Orm\\Observer_Self' => array(
+			'events' => array('after_save')
+		),
 	);
+
+	/**
+	 *	On save, manually update the 'order' field for all this box's children
+	 *	to reflect their order in the 'children' array:
+	 *
+	 * (...is there a better way of doing this?)
+	 */
+	public function _event_after_save()
+	{
+		$i = 1;
+		foreach ($this->children as $child)
+		{
+			$query = DB::update('items_items')
+				->value('order', $i)
+				->where('parent_id', '=', $this->id)
+				->where('child_id',  '=', $child->id)
+				->execute();
+			
+			$i++;
+		}
+	}
 
 	public static function validate($factory)
 	{
