@@ -2,6 +2,25 @@
 class Controller_Item extends Controller_Template
 {
 
+	public function action_test()
+	{
+		$item = Model_Item::find_by_title('Parent Item');
+
+		if (!$item)
+		{
+			// Create parent item:
+			$item = Model_Item::forge(array('title' => 'Parent Item'));
+
+			// Add two child items:
+			$item->children[] = Model_Item::forge(array('title' => 'Child Item 1'));
+			$item->children[] = Model_Item::forge(array('title' => 'Child Item 2'));
+			
+			$item->save();
+		}
+		
+		var_dump($item->children); exit;
+	}
+
 	public function action_index()
 	{
 		$data['items'] = Model_Item::find('all');
