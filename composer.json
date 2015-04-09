@@ -61,9 +61,9 @@
             "package": {
                 "name": "fuel/orm",
                 "type": "fuel-package",
-                "version": "1.7.2",
+                "version": "dev-1.8/develop",
                 "dist": {
-                    "url": "https://github.com/fuel/orm/archive/1.7/master.zip",
+                    "url": "https://github.com/fuel/orm/archive/1.8/develop.zip",
                     "type": "zip"
                 },
                 "source": {
@@ -133,7 +133,7 @@
         "fuel/auth": "1.7.2",
         "fuel/email": "1.7.2",
         "fuel/oil": "1.7.2",
-        "fuel/orm": "1.7.2",
+        "fuel/orm": "dev-1.8/develop",
         "fuel/parser": "1.7.2",
         "fuelphp/upload": "2.0.1",
         "monolog/monolog": "1.5.*",
