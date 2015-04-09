@@ -4,21 +4,55 @@ class Controller_Item extends Controller_Template
 
 	public function action_test()
 	{
-		$item = Model_Item::find_by_title('Parent Item');
+		// Fetch the parent item to test lazy loading:
+		$item_lazy = Model_Item::find_by_title('Parent Item');
 
-		if (!$item)
+		// If the item doesn't exist, create it:
+		if (!$item_lazy)
 		{
 			// Create parent item:
 			$item = Model_Item::forge(array('title' => 'Parent Item'));
 
-			// Add two child items:
-			$item->children[] = Model_Item::forge(array('title' => 'Child Item 1'));
-			$item->children[] = Model_Item::forge(array('title' => 'Child Item 2'));
-			
+			// Create two child items:
+			$child1 = Model_Item::forge(array('title' => 'Child Item 1'));
+			$child2 = Model_Item::forge(array('title' => 'Child Item 2'));
+
+			$child1->save();
+			$child2->save();
+
+			// Add the two child items in reverse order (ie. child2 first):
+			// (order is set by the 'after_save' method)
+			$item->children[] = $child2;
+			$item->children[] = $child1;
+
 			$item->save();
 		}
 		
-		var_dump($item->children); exit;
+		// Fetch the parent item again to test eager loading:
+		$item_eager = Model_Item::query()
+			->related('children')
+			//->related('children2') // causes a Fuel error
+			->related('children3')
+			->where('title', '=', 'Parent Item')
+			->get_one();
+
+		// 'children' is the correct method (as per Fuel's documentation),
+		// but the results are unsorted:
+		echo 'Eager loading - children';
+		var_dump($item_eager->children);
+
+		echo 'Lazy loading - children';
+		var_dump($item_lazy->children);
+
+		// 'children3' is a mysterious alternative approach that actually
+		// now seems to work, but is not in line with the ORM's docs:
+		echo 'Eager loading - children3';
+		var_dump($item_eager->children3);
+
+		echo 'Lazy loading - children3';
+		var_dump($item_lazy->children3);
+
+		exit;
 	}
 
 	public function action_index()

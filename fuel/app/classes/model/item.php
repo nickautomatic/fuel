@@ -17,17 +17,33 @@ class Model_Item extends Model
 				'items_items.order' => 'ASC'	// define custom through table ordering
 			),
 		),
-		// nb. 	this is a hack: we shouldn't be using 't0_through',
-		//		but this allows sorting on lazy-loaded items. It breaks eager-loading, though.
-		//		cf. http://stackoverflow.com/q/10788210/180500
+		// This is a hack: we shouldn't be using 't0_through',
+		// but this allows sorting on lazy-loaded items.
+		// It breaks with eager loading, though.
+		//		
+		// cf. http://stackoverflow.com/q/10788210/180500
 		'children2' => array(
 			'table_through'    => 'items_items',
 			'key_through_from' => 'parent_id',
 			'key_through_to'   => 'child_id',
 			'model_to'         => 'Model_Item',
-			'conditions'			=> array(
-				'order_by' 			=> array(
+			'conditions'       => array(
+				'order_by'     => array(
 					't0_through.order' => 'ASC' // custom through table ordering
+				),
+			),
+		),
+
+		// This *seems* to work (for the 1.8/develop of fuel/orm) 
+		// though it isn't what the documentation suggests...
+		'children3' => array(
+			'table_through'    => 'items_items',
+			'key_through_from' => 'parent_id',
+			'key_through_to'   => 'child_id',
+			'model_to'         => 'Model_Item',
+			'conditions'       => array(
+				'order_by'     => array(
+					'items_items.order' => 'ASC' // custom through table ordering
 				),
 			),
 		),
